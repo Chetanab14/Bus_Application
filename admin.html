@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Bus Express</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- Header / Navbar -->
+    <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand text-danger" href="admin.html">
+                <i class="bi bi-speedometer2"></i> Bus Express Admin
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home.html"><i class="bi bi-house-door me-1"></i>Go to User Portal</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <button class="btn btn-outline-danger btn-sm" onclick="logoutUser()">Logout <i
+                                class="bi bi-box-arrow-right"></i></button>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <button class="theme-toggle-btn" id="theme-toggle" onclick="toggleTheme()"
+                            aria-label="Toggle Theme">
+                            <i class="bi bi-moon-fill"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin dashboard content dashboard -->
+    <main class="container my-4 flex-grow-1">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="fw-bold mb-1">System Management Overview</h2>
+                <p class="text-muted">Perform bus route planning, check real-time user bookings metrics, and compute
+                    schedules.</p>
+            </div>
+        </div>
+
+        <!-- Metrics Counts Row -->
+        <div class="row g-3 mb-5 text-center text-md-start">
+            <!-- Total Buses -->
+            <div class="col-md-3">
+                <div
+                    class="card card-custom p-3 border-0 border-start border-danger border-4 h-100 text-bg-light shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-bus-front fs-2 text-danger"></i>
+                        <div>
+                            <span class="text-muted small fw-bold">Total Buses</span>
+                            <h3 class="fw-bold mb-0 text-dark" id="statTotalBuses">0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Users -->
+            <div class="col-md-3">
+                <div
+                    class="card card-custom p-3 border-0 border-start border-danger border-4 h-100 text-bg-light shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-people fs-2 text-danger"></i>
+                        <div>
+                            <span class="text-muted small fw-bold">Total Users</span>
+                            <h3 class="fw-bold mb-0 text-dark" id="statTotalUsers">0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Bookings -->
+            <div class="col-md-3">
+                <div
+                    class="card card-custom p-3 border-0 border-start border-danger border-4 h-100 text-bg-light shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-ticket-perforated fs-2 text-danger"></i>
+                        <div>
+                            <span class="text-muted small fw-bold">Bookings Made</span>
+                            <h3 class="fw-bold mb-0 text-dark" id="statTotalBookings">0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue -->
+            <div class="col-md-3">
+                <div
+                    class="card card-custom p-3 border-0 border-start border-danger border-4 h-100 text-bg-light shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-currency-rupee fs-2 text-success"></i>
+                        <div>
+                            <span class="text-muted small fw-bold">Total Revenue</span>
+                            <h3 class="fw-bold mb-0 text-success" id="statRevenue">₹0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Layout Tables: Bus Routes list and Actions -->
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="card card-custom p-4 shadow-sm border-0">
+                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                        <h4 class="fw-bold mb-0"><i class="bi bi-list-stars text-danger me-1"></i> Register of Active
+                            Buses</h4>
+                        <!-- Trigger Add Bus modal button -->
+                        <button class="btn btn-danger btn-md shadow-sm" onclick="triggerAddBusModal()">
+                            <i class="bi bi-plus-circle me-1"></i> Add Bus Operator
+                        </button>
+                    </div>
+
+                    <!-- Bus Table Grid -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle border text-nowrap">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Bus Name</th>
+                                    <th>Bus No.</th>
+                                    <th>Type</th>
+                                    <th>Route</th>
+                                    <th>Departure / Arrival</th>
+                                    <th>Seat Fare</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminBusListTable">
+                                <!-- Loaded dynamically -->
+                                <tr>
+                                    <td colspan="7" class="text-center py-4 text-muted">
+                                        <div class="spinner-border text-danger spinner-border-sm" role="status"></div>
+                                        Loading operators list...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Bus Form Modal overlay -->
+    <div class="modal fade" id="busModal" tabindex="-1" aria-labelledby="busModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content card-custom border-0 shadow">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title fw-bold text-dark" id="busModalLabel">Configure Bus Operator</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form id="busForm" novalidate onsubmit="handleBusFormSubmit(event)">
+                    <div class="modal-body py-4">
+                        <input type="hidden" id="editBusIdVal">
+
+                        <div class="row g-3">
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label small fw-semibold">Bus Name</label>
+                                <input type="text" class="form-control" id="busName" placeholder="e.g. RedBus Express"
+                                    required>
+                                <div class="invalid-feedback">Name required.</div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label small fw-semibold">Bus Number</label>
+                                <input type="text" class="form-control" id="busNumber" placeholder="e.g. DL 01 AT 8844"
+                                    required>
+                                <div class="invalid-feedback">No. required.</div>
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label small fw-semibold">Bus Type</label>
+                                <select class="form-select" id="busType" required>
+                                    <option value="" disabled selected>Select Category</option>
+                                    <option value="AC Sleeper">AC Sleeper</option>
+                                    <option value="AC Seater">AC Seater</option>
+                                    <option value="Non-AC Sleeper">Non-AC Sleeper</option>
+                                </select>
+                                <div class="invalid-feedback">Choose category.</div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label small fw-semibold">Total Seats</label>
+                                <input type="number" class="form-control" id="totalSeats" min="10" max="60" value="30"
+                                    required>
+                                <div class="invalid-feedback">Enter 10-60 seats.</div>
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label small fw-semibold">From City</label>
+                                <input type="text" class="form-control" id="fromCityVal" placeholder="e.g. Delhi"
+                                    required>
+                                <div class="invalid-feedback">Source required.</div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label small fw-semibold">To City</label>
+                                <input type="text" class="form-control" id="toCityVal" placeholder="e.g. Mumbai"
+                                    required>
+                                <div class="invalid-feedback">Destination required.</div>
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label small fw-semibold">Departure Time</label>
+                                <input type="time" class="form-control" id="depTime" value="18:00" required>
+                                <div class="invalid-feedback">Select time.</div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label small fw-semibold">Arrival Time</label>
+                                <input type="time" class="form-control" id="arrTime" value="09:00" required>
+                                <div class="invalid-feedback">Select time.</div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Seat Price (INR)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text mt-0 bg-light">₹</span>
+                                    <input type="number" class="form-control" id="busFare" placeholder="e.g. 1200"
+                                        required>
+                                    <div class="invalid-feedback">Valid fare price required.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top justify-content-between">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger btn-sm" id="btnSubmitBus">Save Info</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal Dialog -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content card-custom border-0 shadow">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title fw-bold text-dark" id="deleteConfirmModalLabel"><i
+                            class="bi bi-trash-fill text-danger me-1"></i> Delete Bus Operator?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4 text-center">
+                    <p class="mb-2">Are you sure you want to remove this bus operator from the system?</p>
+                    <div class="badge bg-light text-dark p-2 border mb-3 fs-6">
+                        Bus ID: <span class="fw-bold text-danger" id="deleteModalBusId">bus_XXX</span>
+                    </div>
+                    <p class="text-muted small">This action is permanent. All pending passenger seat queries on this ID
+                        will dissolve.</p>
+                </div>
+                <div class="modal-footer border-top justify-content-between">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Keep
+                        Operator</button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="executeBusDelete()">Confirm
+                        Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sticky Footer -->
+    <footer class="custom-footer mt-auto">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">&copy; 2026 Bus Express Booking System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- API and Admin script codes -->
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

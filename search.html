@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Buses - Bus Express</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- Header / Navbar -->
+    <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="home.html">
+                <i class="bi bi-bus-front"></i> Bus Express
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home.html"><i class="bi bi-house-door me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="mybookings.html"><i class="bi bi-ticket-perforated me-1"></i>My
+                            Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html"><i class="bi bi-person-circle me-1"></i>Profile</a>
+                    </li>
+                    <li class="nav-item flex-md-column" id="admin-nav-item" style="display: none;">
+                        <a class="nav-link text-danger" href="admin.html"><i class="bi bi-speedometer2 me-1"></i>Admin
+                            Dashboard</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <button class="btn btn-outline-danger btn-sm" onclick="logoutUser()">Logout <i
+                                class="bi bi-box-arrow-right"></i></button>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <button class="theme-toggle-btn" id="theme-toggle" onclick="toggleTheme()"
+                            aria-label="Toggle Theme">
+                            <i class="bi bi-moon-fill"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Query Ribbon Banner -->
+    <section class="bg-danger text-white py-3 shadow-sm">
+        <div class="container">
+            <div class="row align-items-center justify-content-between text-center text-md-start">
+                <div class="col-md-8">
+                    <div class="d-flex flex-wrap justify-content-center justify-content-md-start gap-2 fs-5 fw-bold">
+                        <span id="labelFrom">Source</span>
+                        <span>&rarr;</span>
+                        <span id="labelTo">Destination</span>
+                        <span class="ms-md-3 badge bg-white text-danger fw-semibold fs-6" id="labelDate">Date</span>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center text-md-end mt-2 mt-md-0">
+                    <a href="home.html" class="btn btn-outline-light btn-sm fw-semibold"><i
+                            class="bi bi-pencil-square me-1"></i> Change Search</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <main class="container my-4">
+        <div class="row g-4Fixed">
+            <!-- Filter Sidebar Column (Desktop sticky layout) -->
+            <aside class="col-lg-3">
+                <div class="card card-custom p-4 shadow-sm border-0 sticky-lg-top" style="top: 85px; z-index: 10;">
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                        <h5 class="fw-bold mb-0"><i class="bi bi-funnel-fill text-danger me-1"></i> Filters</h5>
+                        <button class="btn btn-link text-muted text-decoration-none p-0 small"
+                            onclick="clearAllFilters()">Clear All</button>
+                    </div>
+
+                    <!-- Bus Type Filter -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold small text-uppercase text-muted mb-2">Bus Type</h6>
+                        <div class="form-check mb-1">
+                            <input class="form-check-input filter-checkbox" type="checkbox" value="AC Sleeper"
+                                id="typeAcSleeper">
+                            <label class="form-check-label small" for="typeAcSleeper">AC Sleeper</label>
+                        </div>
+                        <div class="form-check mb-1">
+                            <input class="form-check-input filter-checkbox" type="checkbox" value="AC Seater"
+                                id="typeAcSeater">
+                            <label class="form-check-label small" for="typeAcSeater">AC Seater</label>
+                        </div>
+                        <div class="form-check mb-1">
+                            <input class="form-check-input filter-checkbox" type="checkbox" value="Non-AC Sleeper"
+                                id="typeNonAcSleeper">
+                            <label class="form-check-label small" for="typeNonAcSleeper">Non-AC Sleeper</label>
+                        </div>
+                    </div>
+
+                    <!-- Price Range Dynamic Filter -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold small text-uppercase text-muted mb-0">Max Price</h6>
+                            <span id="priceVal" class="text-danger fw-bold small">₹2500</span>
+                        </div>
+                        <input type="range" class="form-range" id="priceRange" min="300" max="2500" step="50"
+                            value="2500" oninput="updatePriceLabel(this.value)">
+                        <div class="d-flex justify-content-between small text-muted">
+                            <span>₹300</span>
+                            <span>₹2500</span>
+                        </div>
+                    </div>
+
+                    <!-- Departure Time Filter -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold small text-uppercase text-muted mb-2">Departure Time</h6>
+                        <div class="form-check mb-1">
+                            <input class="form-check-input filter-checkbox-time" type="checkbox" value="morning"
+                                id="timeMorning">
+                            <label class="form-check-label small" for="timeMorning">Morning (5AM - 12PM)</label>
+                        </div>
+                        <div class="form-check mb-1">
+                            <input class="form-check-input filter-checkbox-time" type="checkbox" value="afternoon"
+                                id="timeAfternoon">
+                            <label class="form-check-label small" for="timeAfternoon">Afternoon (12PM - 6PM)</label>
+                        </div>
+                        <div class="form-check mb-1">
+                            <input class="form-check-input filter-checkbox-time" type="checkbox" value="evening"
+                                id="timeEvening">
+                            <label class="form-check-label small" for="timeEvening">Evening (6PM - 5AM)</label>
+                        </div>
+                    </div>
+
+                    <!-- Rating Filter -->
+                    <div class="mb-2">
+                        <h6 class="fw-bold small text-uppercase text-muted mb-2">Minimum Rating</h6>
+                        <div class="d-flex gap-1" id="starRatingFilter">
+                            <button class="btn btn-outline-secondary btn-sm flex-grow-1 star-filter-btn"
+                                onclick="setRatingFilter(4)" id="starBtn4">4★ +</button>
+                            <button class="btn btn-outline-secondary btn-sm flex-grow-1 star-filter-btn"
+                                onclick="setRatingFilter(3)" id="starBtn3">3★ +</button>
+                            <button class="btn btn-outline-secondary btn-sm flex-grow-1 star-filter-btn"
+                                onclick="setRatingFilter(0)" id="starBtn0">All</button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Results Column -->
+            <section class="col-lg-9">
+                <!-- Sorting Ribbon -->
+                <div class="card card-custom p-3 shadow-sm border-0 mb-4">
+                    <div class="row align-items-center justify-content-between">
+                        <div class="col-md-5">
+                            <span class="text-muted fw-bold small" id="resultsCount">0 Buses found</span>
+                        </div>
+                        <div class="col-md-7 mt-2 mt-md-0 d-flex justify-content-md-end align-items-center gap-2">
+                            <span class="text-muted small fw-bold">Sort By:</span>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-danger active sort-btn"
+                                    onclick="sortResults('price')" id="sortPrice">Cheapest</button>
+                                <button type="button" class="btn btn-outline-danger sort-btn"
+                                    onclick="sortResults('duration')" id="sortDuration">Fastest</button>
+                                <button type="button" class="btn btn-outline-danger sort-btn"
+                                    onclick="sortResults('rating')" id="sortRating">Top Rated</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Results List -->
+                <div id="busResultsContainer">
+                    <!-- Skeletons while fetching -->
+                    <div class="bus-card-expanded skeleton-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <div class="skeleton mb-2" style="height: 25px; width: 60%;"></div>
+                                <div class="skeleton" style="height: 15px; width: 40%;"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="skeleton mb-2" style="height: 20px; width: 80%;"></div>
+                                <div class="skeleton" style="height: 12px; width: 30%;"></div>
+                            </div>
+                            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                <div class="skeleton ms-md-auto mb-2" style="height: 25px; width: 40%;"></div>
+                                <div class="skeleton ms-md-auto" style="height: 38px; width: 60%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bus-card-expanded skeleton-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <div class="skeleton mb-2" style="height: 25px; width: 50%;"></div>
+                                <div class="skeleton" style="height: 15px; width: 40%;"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="skeleton mb-2" style="height: 20px; width: 90%;"></div>
+                                <div class="skeleton" style="height: 12px; width: 30%;"></div>
+                            </div>
+                            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                <div class="skeleton ms-md-auto mb-2" style="height: 25px; width: 35%;"></div>
+                                <div class="skeleton ms-md-auto" style="height: 38px; width: 60%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Sticky Footer -->
+    <footer class="custom-footer mt-auto">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">&copy; 2026 Bus Express Booking System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- API and Search Page Logic -->
+    <script src="js/api.js"></script>
+    <script src="js/search.js"></script>
+</body>
+
+</html>
